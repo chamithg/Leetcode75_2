@@ -1,6 +1,5 @@
 class Solution:
     def leastInterval(self, tasks,n):
-        
         if n == 0:
             return len(tasks)
         map = {}
@@ -25,7 +24,7 @@ class Solution:
         time = (longest_task_count-1)  * (n +1)
         print(time,tasks_at_last_seq)
         return  max(time + tasks_at_last_seq,len(tasks))
-        
+            
 
 
 tasks = ["A","A","A","B","B","B","B"]
