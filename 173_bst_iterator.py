@@ -7,30 +7,23 @@
 class BSTIterator:
 
     def __init__(self, root: Optional[TreeNode]):
-        self.values = []
-        self.pointer = 0
-
-        def IOtreverse(root):
-            if not root:
-                return
-            self.values.append(root)
-            IOtreverse(root.left)
-            
-            IOtreverse(root.right)
-        
-        IOtreverse(root)
+        self.stack = []
+        while root:
+            self.stack.append(root)
+            root = root.left
         
 
     def next(self) -> int:
-        if self.pointer + 1 < len(self.values):
-            self.pointer += 1
-        return self.values[self.pointer].val
+        res = self.stack.pop()
+        curr = res.right
+        while curr:
+            self.stack.append(curr)
+            curr = curr.left
+        return res.val
         
 
     def hasNext(self) -> bool:
-        if self.pointer + 1 < len(self.values):
-            return True
-        else: return False
+        return self.stack != []
         
 
 
