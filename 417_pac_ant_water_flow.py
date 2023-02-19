@@ -3,29 +3,44 @@ class Solution:
         
         h = len(heights)
         w = len(heights[0])
-        self.pacific_output = []
-        self.atlantic_output =[]
-        def flow(r1,c1,r,c,h):
-            if r == 0 or c== 0:
-                    self.pacific_output.append([r1,c1])
-            if r == h-1 or c == w-1:
-                    self.atlantic_output.append([r1,c1])
-            directions = [(r,c+1),(r+1,c),(r-1,c),(r,c-1)]
-            for r,c in directions:
-                if 0 <= r < h and 0 <= c <w :
-                    if heights[r][c]<= h:
-                        flow(r1,c1,r,c,heights[r][c])
-                else:return
-
-        # iterate over land cells
+        
+        #  place holders for outputs
+        pac_coord = set()
+        ant_coord = set()
+        
+        # initiate start values
+        pac_start = []
+        ant_start = []
+        
+        # populate start vals
+        
         for r in range(h):
-            for c in range(w):
-                flow(r,c,r,c,heights[r][c])
+            pac_start.append((r,0))
+            ant_start.append((r,w-1))
+            
+        for c in range(w):
+            pac_start.append((0,c))
+            ant_start.append((h-1,c))
         
-        intersct = [value for value in self.pacific_output if value in self.atlantic_output]
+        # create dfs
+        
+        def dfs(r,c,out_set,height):
+            if (r,c) not in out_set:
+                out_set.add((r,c))
+            dir = [(r,c+1),(r,c-1),(r+1,c),(r-1,c)]
+            for r,c in dir:
+                if 0 <=r < h and 0 <= c < w  and (r,c) not in out_set:
+                    if heights[r][c] >= height:
+                        dfs(r,c,out_set,heights[r][c])
                 
-        return intersct
+        #  call dfs on start values
+        for r,c in pac_start: dfs(r,c,pac_coord,heights[r][c])
+        for r,c in ant_start: dfs(r,c,ant_coord,heights[r][c])
         
+        
+        # return the intersection of pac_start and ant_start
+        
+        return pac_coord & ant_coord
         
         
         
@@ -35,8 +50,3 @@ class Solution:
 heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
 obj = Solution()
 print(obj.pacificAtlantic(heights))
-
-[[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
-[[1, 2], [1, 3], [2, 1], [2, 2], [3, 1]]
-
-[[0, 0], [0, 1], [0, 1], [0, 4], [1, 0], [1, 0], [1, 0], [1, 2], [1, 3], [1, 3], [2, 1], [2, 2], [2, 2], [3, 0], [3, 0], [3, 0], [3, 1], [3, 1], [3, 1], [3, 1], [4, 0]]
